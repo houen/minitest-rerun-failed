@@ -1,0 +1,59 @@
+PATH
+  remote: .
+  specs:
+    minitest_rerun_failed (0.1.2)
+      minitest (~> 5.14.4)
+      minitest-reporters (~> 1.4.3)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ansi (1.5.0)
+    ast (2.4.2)
+    builder (3.2.4)
+    minitest (5.14.4)
+    minitest-reporters (1.4.3)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
+    parallel (1.20.1)
+    parser (3.0.2.0)
+      ast (~> 2.4.1)
+    rainbow (3.0.0)
+    rake (13.0.6)
+    regexp_parser (2.1.1)
+    rexml (3.2.5)
+    rubocop (1.20.0)
+      parallel (~> 1.10)
+      parser (>= 3.0.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.9.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.11.0)
+      parser (>= 3.0.1.1)
+    rubocop-minitest (0.15.0)
+      rubocop (>= 0.90, < 2.0)
+    rubocop-rake (0.6.0)
+      rubocop (~> 1.0)
+    ruby-progressbar (1.11.0)
+    unicode-display_width (2.0.0)
+
+PLATFORMS
+  x86_64-darwin-19
+  x86_64-linux
+
+DEPENDENCIES
+  minitest
+  minitest-reporters
+  minitest_rerun_failed!
+  rake
+  rubocop
+  rubocop-minitest
+  rubocop-rake
+
+BUNDLED WITH
+   2.2.18

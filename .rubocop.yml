@@ -1,0 +1,24 @@
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Layout/LineLength:
+  Enabled: true
+  Max: 200
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 19
+
+Style/ConditionalAssignment:
+  Enabled: false
