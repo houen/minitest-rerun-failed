@@ -44,6 +44,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-19
+  x86_64-darwin-20
   x86_64-linux
 
 DEPENDENCIES
@@ -56,4 +57,4 @@ DEPENDENCIES
   rubocop-rake
 
 BUNDLED WITH
-   2.2.18
+   2.2.22
