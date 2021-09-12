@@ -3,7 +3,7 @@
 require_relative "lib/minitest_rerun_failed/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "minitest_rerun_failed"
+  spec.name          = "minitest-rerun-failed"
   spec.version       = MinitestRerunFailed::VERSION
   spec.authors       = ["Søren Houen"]
   spec.email         = ["s@houen.net"]
