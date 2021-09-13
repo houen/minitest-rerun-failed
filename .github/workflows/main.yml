@@ -1,16 +1,40 @@
-name: Master
+name: Tests
 
 on: [push,pull_request]
 
 jobs:
-  rake_test:
+  rake_test_ruby_3_0:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.0.1
+        ruby-version: 3.0.2
         bundler-cache: true
     - name: Run rake test
       run: bundle exec rake test
+
+  rake_test_ruby_2_7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.4
+          bundler-cache: true
+      - name: Run rake test
+        run: bundle exec rake test
+
+  rake_test_ruby_2_6:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6.8
+          bundler-cache: true
+      - name: Run rake test
+        run: bundle exec rake test
