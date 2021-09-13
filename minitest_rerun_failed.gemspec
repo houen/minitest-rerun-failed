@@ -9,13 +9,13 @@ Gem::Specification.new do |spec|
   spec.email         = ["s@houen.net"]
 
   spec.summary       = "Easily rerun failed tests with Minitest"
-  spec.homepage      = "https://www.github.com/houen/minitest_rerun_failed"
+  spec.homepage      = "https://www.github.com/houen/minitest-rerun-failed"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://www.github.com/houen/minitest_rerun_failed"
-  spec.metadata["changelog_uri"] = "https://www.github.com/houen/minitest_rerun_failed/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://www.github.com/houen/minitest-rerun-failed"
+  spec.metadata["changelog_uri"] = "https://www.github.com/houen/minitest-rerun-failed/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
