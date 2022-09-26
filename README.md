@@ -20,7 +20,7 @@ Easy rerun of failed tests with minitest.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'minitest_rerun_failed'
+gem 'minitest-rerun-failed'
 ```
 
 And then execute:
@@ -29,18 +29,37 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install minitest_rerun_failed
+    $ gem install minitest-rerun-failed
 
 ## Usage
 
 Use it like any Minitest::Reporters like such:
 
-```
+```ruby
 Minitest::Reporters.use! [
   Minitest::Reporters::ProgressReporter.new, # This is just my preferred reporter. Use the one(s) you like.
   Minitest::Reporters::FailedTestsReporter.new(verbose: true, include_line_numbers: true)
 ]
 ```
+
+## Rails Usage
+
+In your `test_helper.rb` file, add the following lines 
+
+```ruby
+require "minitest_rerun_failed"
+
+Minitest::Reporters.use!(
+  [Minitest::Reporters::DefaultReporter.new(color: true),
+   Minitest::Reporters::FailedTestsReporter.new(verbose: true, include_line_numbers: true, output_path: "tmp")
+  ],
+  ENV,
+  Minitest.backtrace_filter
+)
+
+```
+
+
 
 ### Options
 - include_line_numbers: Include line numbers in outputs. Defaults to true
