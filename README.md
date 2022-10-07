@@ -2,17 +2,17 @@
 ![master branch CI](https://github.com/houen/minitest-rerun-failed/actions/workflows/main.yml/badge.svg?branch=master)
 [![Gem Version](https://badge.fury.io/rb/minitest-rerun-failed.svg)](https://badge.fury.io/rb/minitest-rerun-failed)
 
-Easy rerun of failed tests with minitest.
+Easy rerun of failed tests with minitest. Prints a list of failed tests at the end of the test run to console and file. Allows for re-running the failed tests via `cat`'ing the outputted file.
 
 ![Example screenshot](assets/screenshot.png)
 
-## Goals
+## Features
 - Outputs all failed tests in short summary at end of test run.
   - To console and / or to file
   - Optionally includes line numbers
 - Lists seed of run for rerun.
 - [TODO] Executable for running only failed tests
-  - Until then, use something like 
+  - Until done, use something like 
     - `ruby $(cat .minitest_failed_tests.txt)`
     - `bundle exec rails test $(cat .minitest_failed_tests.txt)`
 
