@@ -1,5 +1,6 @@
 # minitest-rerun-failed
 ![master branch CI](https://github.com/houen/minitest-rerun-failed/actions/workflows/main.yml/badge.svg?branch=master)
+[![Gem Version](https://badge.fury.io/rb/minitest-rerun-failed.svg)](https://badge.fury.io/rb/minitest-rerun-failed)
 
 Easy rerun of failed tests with minitest.
 
