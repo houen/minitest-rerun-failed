@@ -1,18 +1,19 @@
 # minitest-rerun-failed
 [![Gem Version](https://badge.fury.io/rb/minitest-rerun-failed.svg)](https://badge.fury.io/rb/minitest-rerun-failed)
 ![master branch CI](https://github.com/houen/minitest-rerun-failed/actions/workflows/main.yml/badge.svg?branch=master)
+[![Gem Version](https://badge.fury.io/rb/minitest-rerun-failed.svg)](https://badge.fury.io/rb/minitest-rerun-failed)
 
-Easy rerun of failed tests with minitest.
+Easy rerun of failed tests with minitest. Prints a list of failed tests and seed at the end of the test run to console and file. Allows for re-running the failed tests via `cat`'ing the outputted file.
 
 ![Example screenshot](assets/screenshot.png)
 
-## Goals
+## Features
 - Outputs all failed tests in short summary at end of test run.
   - To console and / or to file
   - Optionally includes line numbers
 - Lists seed of run for rerun.
 - [TODO] Executable for running only failed tests
-  - Until then, use something like 
+  - Until done, use something like 
     - `ruby $(cat .minitest_failed_tests.txt)`
     - `bundle exec rails test $(cat .minitest_failed_tests.txt)`
 
@@ -21,7 +22,7 @@ Easy rerun of failed tests with minitest.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'minitest_rerun_failed'
+gem 'minitest-rerun-failed'
 ```
 
 And then execute:
@@ -30,18 +31,37 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install minitest_rerun_failed
+    $ gem install minitest-rerun-failed
 
 ## Usage
 
 Use it like any Minitest::Reporters like such:
 
-```
+```ruby
 Minitest::Reporters.use! [
   Minitest::Reporters::ProgressReporter.new, # This is just my preferred reporter. Use the one(s) you like.
   Minitest::Reporters::FailedTestsReporter.new(verbose: true, include_line_numbers: true)
 ]
 ```
+
+## Rails Usage
+
+In your `test_helper.rb` file, add the following lines 
+
+```ruby
+require "minitest_rerun_failed"
+
+Minitest::Reporters.use!(
+  [Minitest::Reporters::DefaultReporter.new(color: true),
+   Minitest::Reporters::FailedTestsReporter.new(verbose: true, include_line_numbers: true, output_path: "tmp")
+  ],
+  ENV,
+  Minitest.backtrace_filter
+)
+
+```
+
+
 
 ### Options
 - include_line_numbers: Include line numbers in outputs. Defaults to true
