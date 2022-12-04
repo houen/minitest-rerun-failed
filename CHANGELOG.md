@@ -1,3 +1,6 @@
+## [0.2.1] - 2022-12-04
+- Set dependency versions with >= so they do not enforce old versions
+
 ## [0.2.0] - 2021-09-12
 - Add support for Ruby 2.6
 
