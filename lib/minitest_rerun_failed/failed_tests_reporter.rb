@@ -83,7 +83,7 @@ module Minitest
         failure_file_location.gsub!(curdir, "")
         failure_file_location.gsub!(%r{^/}, "")
 
-        failure_file_location
+        failure_file_location.to_s.strip
       end
 
       def output_results(failure_paths, file_output)

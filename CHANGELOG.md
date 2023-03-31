@@ -1,3 +1,6 @@
+## [0.2.1] - 2023-03-31
+- Fixed: Strip leading whitespace from failure locations
+
 ## [0.2.1] - 2022-12-04
 - Set dependency versions with >= so they do not enforce old versions
 
