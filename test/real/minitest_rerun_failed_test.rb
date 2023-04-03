@@ -2,6 +2,10 @@
 
 require "test_helper"
 
+def output_dir(fail_test_name)
+  "#{__dir__}/../test_output/#{fail_test_name}"
+end
+
 # Which number test to run and fail
 FAIL_TEST_NAME = ENV["FAIL_TEST_NAME"]
 
@@ -21,7 +25,7 @@ else
   Minitest::Reporters.use!(
     [
       Minitest::Reporters::FailedTestsReporter.new(
-        output_path: "./test_output/#{FAIL_TEST_NAME}"
+        output_path: output_dir(FAIL_TEST_NAME)
       )
     ]
   )
@@ -60,8 +64,9 @@ class MinitestRerunFailedTest < Minitest::Test
   end
 
   def fail_self_file_output
+    p output_dir(FAIL_TEST_NAME)
     fail_self
-    File.read("./test_output/#{name}/.minitest_failed_tests.txt")
+    File.read("#{output_dir(FAIL_TEST_NAME)}/.minitest_failed_tests.txt")
   end
 
   def test_that_it_has_a_version_number
