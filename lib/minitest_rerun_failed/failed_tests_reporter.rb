@@ -68,7 +68,7 @@ module Minitest
         tmp_haystack << test.failure.location
         tmp_haystack << test.to_s
         # Add filtered backtrace unless it is an unexpected error, which do not have a useful trace
-        tmp_haystack << filter_backtrace(test.failure.backtrace).join unless test.failure.is_a?(MiniTest::UnexpectedError)
+        tmp_haystack << filter_backtrace(test.failure.backtrace).join unless test.failure.is_a?(Minitest::UnexpectedError)
 
         # Get failure location as best we can from haystack
         if @include_line_numbers
