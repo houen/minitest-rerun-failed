@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    minitest-rerun-failed (0.2.0)
+    minitest-rerun-failed (0.2.2)
       minitest (>= 5.0.0)
       minitest-reporters (>= 1.4.0)
 
@@ -43,6 +43,7 @@ GEM
     unicode-display_width (2.0.0)
 
 PLATFORMS
+  arm64-darwin-21
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-linux
