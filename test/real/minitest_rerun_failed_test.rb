@@ -28,7 +28,10 @@ else
 end
 
 class MinitestRerunFailedTest < Minitest::Test
-  # Suppress stdout / stderr output from secondary tests
+  # Suppress stdout / stderr output from secondary tests.
+  # This is because we expect them to print a long stacktrace.
+  # With it shown it would always look like tests failed.
+  # Note that this also hides eg. Bundler::GemNotFound errors.
   # Source: https://gist.github.com/moertel/11091573
   def suppress_output
     original_stderr = $stderr.clone
@@ -62,6 +65,13 @@ class MinitestRerunFailedTest < Minitest::Test
   def fail_self_file_output
     fail_self
     File.read("./test_output/#{name}/.minitest_failed_tests.txt")
+  end
+
+  # Stub test to ensure tests can run.
+  # This is here b/c #suppress_output also hides eg Bundler::GemNotFound errors.
+  # This test will print and show such issues.
+  def test_it_succeeds
+    assert true
   end
 
   def test_that_it_has_a_version_number
