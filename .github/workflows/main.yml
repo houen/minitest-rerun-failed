@@ -26,15 +26,3 @@ jobs:
           bundler-cache: true
       - name: Run rake test
         run: bundle exec rake test
-
-  rake_test_ruby_2_6:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.6.8
-          bundler-cache: true
-      - name: Run rake test
-        run: bundle exec rake test
