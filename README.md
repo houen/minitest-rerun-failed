@@ -92,8 +92,9 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/houen/
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## TODO
-- Executable for rerun? (https://stackoverflow.com/a/65707495)
-- Rerun with same seed
+- Better workflow for rerunning tests
+  - Executable for rerun? (https://stackoverflow.com/a/65707495)
+  - Rerun with same seed
 - Minitest-reporters or minitest plugin?
 
 https://stackoverflow.com/questions/19910533/minitest-rerun-only-failed-tests
