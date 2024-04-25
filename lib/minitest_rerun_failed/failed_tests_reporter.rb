@@ -72,9 +72,11 @@ module Minitest
 
         # Get failure location as best we can from haystack
         if @include_line_numbers
-          failure_file_location = tmp_haystack.join[/(.+_test\.rb:[0-9]+)/, 1]
+          regex_keeping_line_numbers = /(.+_test\.rb:[0-9]+)/
+          failure_file_location = tmp_haystack.join[regex_keeping_line_numbers, 1]
         else
-          failure_file_location = tmp_haystack.join[/(.+_test\.rb):[0-9]+/, 1]
+          regex_removing_line_numbers = /(.+_test\.rb):[0-9]+/
+          failure_file_location = tmp_haystack.join[regex_removing_line_numbers, 1]
         end
 
         return unless failure_file_location
@@ -92,9 +94,11 @@ module Minitest
         _puts("")
         headline = @include_line_numbers ? "Failed tests: #{failure_paths.count} (seed #{@options[:seed]}):" : "Failed test files: #{failure_paths.count} (seed #{@options[:seed]}):"
         _puts(headline)
+
         failure_paths.uniq.each do |file_path|
-          file_output << file_path.to_s
-          _puts red(file_path.strip)
+          stripped_path = file_path.strip
+          file_output << stripped_path
+          _puts color_red(stripped_path)
         end
       end
 
@@ -119,15 +123,15 @@ module Minitest
         end
       end
 
-      def green(string)
+      def color_green(string)
         color? ? ANSI::Code.green(string) : string
       end
 
-      def yellow(string)
+      def color_yellow(string)
         color? ? ANSI::Code.yellow(string) : string
       end
 
-      def red(string)
+      def color_red(string)
         color? ? ANSI::Code.red(string) : string
       end
     end
