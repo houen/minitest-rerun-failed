@@ -75,15 +75,15 @@ class MinitestRerunFailedTest < Minitest::Test
   end
 
   def test_that_it_has_a_version_number
-    refute_nil ::MinitestRerunFailed::VERSION
+    assert_not_nil ::MinitestRerunFailed::VERSION
   end
 
   def test_it_writes_failed_tests_to_stdout
-    refute_empty fail_self_console_output
+    assert_not_empty fail_self_console_output
   end
 
   def test_it_writes_failed_tests_to_file
-    refute_empty fail_self_file_output
+    assert_not_empty fail_self_file_output
   end
 
   def test_it_prints_failed_tests_with_seed

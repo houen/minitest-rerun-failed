@@ -5,8 +5,8 @@ require_relative "lib/minitest_rerun_failed/version"
 Gem::Specification.new do |spec|
   spec.name          = "minitest-rerun-failed"
   spec.version       = MinitestRerunFailed::VERSION
-  spec.authors       = ["Søren Houen"]
-  spec.email         = ["s@houen.net"]
+  spec.authors       = [ "Søren Houen" ]
+  spec.email         = [ "s@houen.net" ]
 
   spec.summary       = "Easily rerun failed tests with Minitest"
   spec.homepage      = "https://www.github.com/houen/minitest-rerun-failed"
@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.require_paths = [ "lib" ]
 
   # Uncomment to register a new dependency of your gem
   spec.add_runtime_dependency "minitest", "~> 5.0", ">= 5.0.0"
