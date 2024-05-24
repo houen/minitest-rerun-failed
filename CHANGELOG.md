@@ -1,7 +1,5 @@
-## [0.2.2] - 2024-04-20
+## [Unreleased] - 2024-04-20
 - Changed: Also strip file paths when writing to .minitest_failed_tests.txt
-
-## [0.2.1] - 2023-03-31
 - Fixed: Strip leading whitespace from failure locations
 
 ## [0.2.1] - 2022-12-04
