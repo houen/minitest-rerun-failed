@@ -2,9 +2,7 @@
 - Changed: Also strip file paths when writing to .minitest_failed_tests.txt
 
 ## [0.2.1] - 2023-03-31
-- Fixed: Strip leading whitespace from failure locations
-
-## [0.2.1] - 2022-12-04
+- Fixed: Strip leading whitespace from failure locations in output
 - Set dependency versions with >= so they do not enforce old versions
 
 ## [0.2.0] - 2021-09-12
