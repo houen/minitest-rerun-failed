@@ -9,3 +9,5 @@
 
 /test_output/
 .minitest_failed_tests.txt
+
+*.gem
