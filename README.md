@@ -40,6 +40,22 @@ Minitest::Reporters.use! [
 ]
 ```
 
+Now failed tests and seed will be printed at the end of the test report.
+
+If you have installed the binstub, you can rerun the failed tests with 
+```
+bin/rerun_failed_tests
+```
+
+If you have not installed the binstub, you can rerun the failed tests with something like:
+```
+# Ruby:
+ruby $(cat .minitest_failed_tests.txt)
+
+# Rails:
+bundle exec rails test $(cat .minitest_failed_tests.txt)
+```
+
 ### Options
 - include_line_numbers: Include line numbers in outputs. Defaults to true
 - verbose: Output to stdout. Defaults to true
