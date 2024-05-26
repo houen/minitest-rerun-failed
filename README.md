@@ -3,7 +3,7 @@
 ![master branch CI](https://github.com/houen/minitest-rerun-failed/actions/workflows/main.yml/badge.svg?branch=master)
 [![Gem Version](https://badge.fury.io/rb/minitest-rerun-failed.svg)](https://badge.fury.io/rb/minitest-rerun-failed)
 
-Easy rerun of failed tests with minitest. Prints a list of failed tests and seed at the end of the test run to console and file. Allows for re-running the failed tests via `cat`'ing the outputted file.
+Easy rerun of failed tests with minitest. Prints a list of failed tests and seed at the end of the test run to console and file. Re-run the failed tests with `bin/rerun_failed_tests`.
 
 ![Example screenshot](assets/screenshot.png)
 
