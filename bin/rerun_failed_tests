@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+# See also:
+#   https://guides.rubygems.org/make-your-own-gem/#adding-an-executable
+
+filename = ".minitest_failed_tests.txt"
+dirpath = ENV["MINITEST_FAILED_TESTS_REPORT_DIR"] || "./"
+filepath = File.join(dirpath, filename)
+
+failed_tests = []
+
+if !File.exist?(filename)
+  puts "No #{filename} found"
+elsif File.empty?(filename)
+  puts "No failed tests in #{filename}"
+else
+  failed_tests += File.readlines(filepath).map{ _1.strip }
+  rails_installed = Gem.loaded_specs.has_key?("rails")
+  if rails_installed
+    cmd = "bundle exec rails test #{failed_tests.join(" ")}"
+  else
+    cmd = "bundle exec ruby #{failed_tests.join(" ")}"
+  end
+
+  IO.popen(cmd) do |io|
+    io.each do |line|
+      puts line
+    end
+  end
+end
