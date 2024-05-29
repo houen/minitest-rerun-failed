@@ -11,21 +11,15 @@ Easy rerun of failed tests with minitest. Prints a list of failed tests and seed
 - Outputs all failed tests in short summary at end of test run.
   - To console and / or to file
   - Optionally includes line numbers
-- Lists seed of run for rerun.
-- Executable for running only failed tests
-  - Until done, use something like 
-    - `ruby $(cat .minitest_failed_tests.txt)`
-    - `bundle exec rails test $(cat .minitest_failed_tests.txt)`
+- Lists seed for re-running with same seed.
+- Executable for re-running only failed tests
 
 ## Installation
 
 ```
 bundle add "minitest-rerun-failed" --group test
-```
 
-If you want to install the executable to `bin/rerun_failed_tests`:
-
-```
+# installs executable bin/rerun_failed_tests
 bundle binstubs minitest-rerun-failed
 ```
 
