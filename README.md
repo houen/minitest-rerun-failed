@@ -23,6 +23,8 @@ bundle add "minitest-rerun-failed" --group test
 bundle binstubs minitest-rerun-failed
 ```
 
+This gem depends on [`minitest-reporters-next`](https://rubygems.org/gems/minitest-reporters-next), a community-maintained fork of `minitest-reporters` with minitest 6 support and compatibility with prepend-based plugins like `minitest-around`.
+
 ## Usage
 
 Use it like any Minitest::Reporters like such:
