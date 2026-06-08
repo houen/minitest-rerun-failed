@@ -72,10 +72,10 @@ module Minitest
 
         # Get failure location as best we can from haystack
         if @include_line_numbers
-          regex_keeping_line_numbers = /(.+_test\.rb:[0-9]+)/
+          regex_keeping_line_numbers = /(.+(_test|_spec)\.rb:[0-9]+)/
           failure_file_location = tmp_haystack.join[regex_keeping_line_numbers, 1]
         else
-          regex_removing_line_numbers = /(.+_test\.rb):[0-9]+/
+          regex_removing_line_numbers = /(.+(_test|_spec)\.rb):[0-9]+/
           failure_file_location = tmp_haystack.join[regex_removing_line_numbers, 1]
         end
 
