@@ -7,6 +7,9 @@
 /spec/reports/
 /tmp/
 
+Gemfile.lock
+mise.toml
+
 /test_output/
 .minitest_failed_tests.txt
 
