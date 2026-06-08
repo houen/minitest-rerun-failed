@@ -10,13 +10,16 @@ module Minitest
     #
     # Example:
     #   In test_helper.rb or similar:
-    #   Minitest::Reporters.use! [Minitest::Reporters::ProgressReporter.new, Minitest::Reporters::FailedTestsReporter.new(verbose: true, include_line_numbers: true)]
+    #   Minitest::Reporters.use! [
+    #     Minitest::Reporters::ProgressReporter.new,
+    #     Minitest::Reporters::FailedTestsReporter.new(verbose: true, include_line_numbers: true)
+    #   ]
     #
-    #   Now after a failed test run, rerun failed tests only with: `bundle exec rails test $(cat .minitest_failed_tests.txt)`
+    #   Now after a failed test run, rerun failed tests only with: `bin/rerun_failed_tests`
     #
     class FailedTestsReporter < Minitest::Reporters::BaseReporter
       def initialize(options = {})
-        super(options)
+        super
         @options = options
 
         # Include line numbers? (failed_test.rb:42 or just failed_test.rb)
@@ -32,35 +35,27 @@ module Minitest
         @output_file_path = File.join(@output_path, ".minitest_failed_tests.txt")
       end
 
-      def record(test)
-        super
-      end
-
       def report
         super
 
-        failure_paths = []
-        file_output   = []
         curdir        = FileUtils.pwd
+        failure_paths = failed_test_locations(curdir)
+        output_paths  = failure_paths.map(&:strip).uniq
 
-        tests.each do |test|
-          next if test.skipped?
-          next if test.failure.nil?
-
-          # DEBUG OUTPUT STR
-          # p '============================================='
-          # p "Failure:\n#{test.class}##{test.name} [#{test.failure.location}]\n#{test.failure.class}: #{test.failure.message}"
-          # p '============================================='
-
-          failure_file_location = find_failure_location(test, curdir)
-          failure_paths << failure_file_location if failure_file_location
-        end
-
-        output_results(failure_paths, file_output)
-        write_file_output(file_output) if @file_output
+        output_results(failure_paths.count, output_paths)
+        write_file_output(output_paths) if @file_output
       end
 
       private
+
+      def failed_test_locations(curdir)
+        tests.filter_map do |test|
+          next if test.skipped?
+          next if test.failure.nil?
+
+          find_failure_location(test, curdir)
+        end
+      end
 
       def find_failure_location(test, curdir)
         # Build a haystack string from failures and errors to find test file location in
@@ -68,7 +63,9 @@ module Minitest
         tmp_haystack << test.failure.location
         tmp_haystack << test.to_s
         # Add filtered backtrace unless it is an unexpected error, which do not have a useful trace
-        tmp_haystack << filter_backtrace(test.failure.backtrace).join unless test.failure.is_a?(Minitest::UnexpectedError)
+        unless test.failure.is_a?(Minitest::UnexpectedError)
+          tmp_haystack << filter_backtrace(test.failure.backtrace).join
+        end
 
         # Get failure location as best we can from haystack
         if @include_line_numbers
@@ -88,17 +85,20 @@ module Minitest
         failure_file_location.to_s.strip
       end
 
-      def output_results(failure_paths, file_output)
-        return if failure_paths.empty?
+      def output_results(failure_count, output_paths)
+        return if output_paths.empty?
 
         _puts("")
-        headline = @include_line_numbers ? "Failed tests: #{failure_paths.count} (seed #{@options[:seed]}):" : "Failed test files: #{failure_paths.count} (seed #{@options[:seed]}):"
+        headline =
+          if @include_line_numbers
+            "Failed tests: #{failure_count} (seed #{@options[:seed]}):"
+          else
+            "Failed test files: #{failure_count} (seed #{@options[:seed]}):"
+          end
         _puts(headline)
 
-        failure_paths.uniq.each do |file_path|
-          stripped_path = file_path.strip
-          file_output << stripped_path
-          _puts color_red(stripped_path)
+        output_paths.each do |file_path|
+          _puts color_red(file_path)
         end
       end
 
@@ -113,27 +113,15 @@ module Minitest
         puts(str)
       end
 
-      def print_padded_comment(line)
-        puts "##{pad(line)}"
-      end
-
       def color?
         return @color if defined?(@color)
 
         @color = @options.fetch(:color) do
           io.tty? && (
-            ENV["TERM"] =~ /^screen|color/ ||
-              ENV["EMACS"] == "t"
+            ENV.fetch("TERM", nil) =~ /^screen|color/ ||
+              ENV.fetch("EMACS", nil) == "t"
           )
         end
-      end
-
-      def color_green(string)
-        color? ? ANSI::Code.green(string) : string
-      end
-
-      def color_yellow(string)
-        color? ? ANSI::Code.yellow(string) : string
       end
 
       def color_red(string)

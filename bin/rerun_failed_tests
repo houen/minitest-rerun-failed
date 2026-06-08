@@ -1,58 +1,9 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # See also:
 #   https://guides.rubygems.org/make-your-own-gem/#adding-an-executable
 
-require "English"
+require "minitest_rerun_failed/runner"
 
-filename = ".minitest_failed_tests.txt"
-dirpath = ENV["MINITEST_FAILED_TESTS_REPORT_DIR"] || "./"
-filepath = File.join(dirpath, filename)
-
-def rails_installed?
-  Gem.loaded_specs.key?("rails")
-end
-
-def ruby_test_files(failed_tests)
-  failed_tests.map { |test_file| test_file.sub(/:[0-9]+\z/, "") }.uniq
-end
-
-def commands_for(failed_tests)
-  if rails_installed?
-    [
-      ["bundle", "exec", "rails", "test", *failed_tests]
-    ]
-  else
-    ruby_test_files(failed_tests).map do |test_file|
-      ["bundle", "exec", "ruby", test_file]
-    end
-  end
-end
-
-def run_command(command)
-  system(*command)
-  $CHILD_STATUS&.exitstatus || 1
-end
-
-def rerun_failed_tests(failed_tests)
-  commands_for(failed_tests).each do |command|
-    exit_status = run_command(command)
-    return exit_status unless exit_status.zero?
-  end
-
-  0
-end
-
-if !File.exist?(filepath)
-  puts "No #{filename} found"
-elsif File.empty?(filepath)
-  puts "No failed tests in #{filename}"
-else
-  failed_tests = File.readlines(filepath, chomp: true).map(&:strip).reject(&:empty?)
-
-  if failed_tests.empty?
-    puts "No failed tests in #{filename}"
-  else
-    exit rerun_failed_tests(failed_tests)
-  end
-end
+exit MinitestRerunFailed::Runner.new.call

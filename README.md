@@ -43,8 +43,8 @@ bin/rerun_failed_tests
 
 If you have not installed the binstub, you can rerun the failed tests with something like:
 ```
-# Ruby:
-ruby $(cat .minitest_failed_tests.txt)
+# Ruby, when using include_line_numbers: false:
+bundle exec ruby $(cat .minitest_failed_tests.txt)
 
 # Rails:
 bundle exec rails test $(cat .minitest_failed_tests.txt)

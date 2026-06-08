@@ -1,28 +1,37 @@
 name: Tests
 
-on: [push,pull_request]
+on: [push, pull_request]
 
 jobs:
-  rake_test_ruby_3_0:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - "2.7"
+          - "3.0"
+          - "3.3"
+          - "3.4"
+          - "4.0"
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.0.2
-        bundler-cache: true
-    - name: Run rake test
-      run: bundle exec rake test
-
-  rake_test_ruby_2_7:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.4
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Run rake test
         run: bundle exec rake test
+
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+      - name: Run RuboCop
+        run: bundle exec rubocop --no-server

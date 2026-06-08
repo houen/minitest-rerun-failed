@@ -11,7 +11,7 @@ Minitest::Reporters.use!(
 
 class ExampleTest < Minitest::Test
   def test_one
-    assert false
+    flunk
   end
 
   def test_two
@@ -19,30 +19,30 @@ class ExampleTest < Minitest::Test
   end
 
   def test_three
-    assert false
+    flunk
   end
 
   def test_four
-    assert false
+    flunk
   end
 
   def test_five
-    assert false
+    flunk
   end
 
   def test_six
-    assert false
+    flunk
   end
 
   def test_seven
-    assert false
+    flunk
   end
 
   def test_eight
-    assert false
+    flunk
   end
 
   def test_nine
-    assert false
+    flunk
   end
 end

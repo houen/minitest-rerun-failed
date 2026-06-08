@@ -5,8 +5,8 @@ require_relative "lib/minitest_rerun_failed/version"
 Gem::Specification.new do |spec|
   spec.name          = "minitest-rerun-failed"
   spec.version       = MinitestRerunFailed::VERSION
-  spec.authors       = [ "Søren Houen" ]
-  spec.email         = [ "s@houen.net" ]
+  spec.authors       = ["Søren Houen"]
+  spec.email         = ["s@houen.net"]
 
   spec.summary       = "Easily rerun failed tests with Minitest"
   spec.homepage      = "https://www.github.com/houen/minitest-rerun-failed"
@@ -23,12 +23,12 @@ Gem::Specification.new do |spec|
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{\A(?:test|spec|features|script|assets)/}) }
   end
   spec.bindir        = "bin"
-  spec.require_paths = [ "lib" ]
+  spec.require_paths = ["lib"]
   spec.executables << "rerun_failed_tests"
 
   # Uncomment to register a new dependency of your gem
-  spec.add_runtime_dependency "minitest", "~> 5.0", ">= 5.0.0"
-  spec.add_runtime_dependency "minitest-reporters", "~> 1.4", ">= 1.4.0"
+  spec.add_dependency "minitest", "~> 5.0", ">= 5.0.0"
+  spec.add_dependency "minitest-reporters", "~> 1.4", ">= 1.4.0"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

@@ -1,5 +1,28 @@
-# Omakase Ruby styling for Rails
-inherit_gem:
-  rubocop-rails-omakase: rubocop.yml
+plugins:
+  - rubocop-minitest
+  - rubocop-rake
 
-# Your own specialized rules go here
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.7
+
+Gemspec/RequireMFA:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/MethodLength:
+  Max: 25
+
+Minitest/AssertWithExpectedArgument:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
