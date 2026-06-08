@@ -27,13 +27,13 @@ module Minitest
         @file_output = options.fetch(:file_output, true)
         # What path to file?
         @output_path = options.fetch(:output_path, ".")
-        FileUtils.mkdir_p(@output_path) if @output_path
+        FileUtils.mkdir_p(@output_path) if @file_output && @output_path
 
         @output_file_path = File.join(@output_path, ".minitest_failed_tests.txt")
       end
 
       def record(test)
-        tests << test
+        super
       end
 
       def report
@@ -57,7 +57,7 @@ module Minitest
         end
 
         output_results(failure_paths, file_output)
-        File.write(@output_file_path, file_output.join("\n"), encoding: "UTF-8")
+        write_file_output(file_output) if @file_output
       end
 
       private
@@ -100,6 +100,11 @@ module Minitest
           file_output << stripped_path
           _puts color_red(stripped_path)
         end
+      end
+
+      def write_file_output(file_output)
+        output = file_output.empty? ? "" : "#{file_output.join("\n")}\n"
+        File.write(@output_file_path, output, encoding: "UTF-8")
       end
 
       def _puts(str)

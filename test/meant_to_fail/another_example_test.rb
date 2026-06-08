@@ -10,15 +10,15 @@ Minitest::Reporters.use!(
 )
 
 class AnotherExampleTest < Minitest::Test
-  def test1
+  def test_one
     assert false
   end
 
-  def test2
+  def test_two
     raise
   end
 
-  def test3
+  def test_three
     assert false
   end
 end

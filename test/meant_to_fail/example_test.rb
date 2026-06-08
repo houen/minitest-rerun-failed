@@ -10,39 +10,39 @@ Minitest::Reporters.use!(
 )
 
 class ExampleTest < Minitest::Test
-  def test1
+  def test_one
     assert false
   end
 
-  def test2
+  def test_two
     raise
   end
 
-  def test3
+  def test_three
     assert false
   end
 
-  def test4
+  def test_four
     assert false
   end
 
-  def test5
+  def test_five
     assert false
   end
 
-  def test6
+  def test_six
     assert false
   end
 
-  def test7
+  def test_seven
     assert false
   end
 
-  def test8
+  def test_eight
     assert false
   end
 
-  def test9
+  def test_nine
     assert false
   end
 end
