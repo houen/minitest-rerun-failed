@@ -3,28 +3,56 @@
 # See also:
 #   https://guides.rubygems.org/make-your-own-gem/#adding-an-executable
 
+require "English"
+
 filename = ".minitest_failed_tests.txt"
 dirpath = ENV["MINITEST_FAILED_TESTS_REPORT_DIR"] || "./"
 filepath = File.join(dirpath, filename)
 
-failed_tests = []
+def rails_installed?
+  Gem.loaded_specs.key?("rails")
+end
 
-if !File.exist?(filename)
-  puts "No #{filename} found"
-elsif File.empty?(filename)
-  puts "No failed tests in #{filename}"
-else
-  failed_tests += File.readlines(filepath).map{ _1.strip }
-  rails_installed = Gem.loaded_specs.has_key?("rails")
-  if rails_installed
-    cmd = "bundle exec rails test #{failed_tests.join(" ")}"
+def ruby_test_files(failed_tests)
+  failed_tests.map { |test_file| test_file.sub(/:[0-9]+\z/, "") }.uniq
+end
+
+def commands_for(failed_tests)
+  if rails_installed?
+    [
+      ["bundle", "exec", "rails", "test", *failed_tests]
+    ]
   else
-    cmd = "bundle exec ruby #{failed_tests.join(" ")}"
+    ruby_test_files(failed_tests).map do |test_file|
+      ["bundle", "exec", "ruby", test_file]
+    end
+  end
+end
+
+def run_command(command)
+  system(*command)
+  $CHILD_STATUS&.exitstatus || 1
+end
+
+def rerun_failed_tests(failed_tests)
+  commands_for(failed_tests).each do |command|
+    exit_status = run_command(command)
+    return exit_status unless exit_status.zero?
   end
 
-  IO.popen(cmd) do |io|
-    io.each do |line|
-      puts line
-    end
+  0
+end
+
+if !File.exist?(filepath)
+  puts "No #{filename} found"
+elsif File.empty?(filepath)
+  puts "No failed tests in #{filename}"
+else
+  failed_tests = File.readlines(filepath, chomp: true).map(&:strip).reject(&:empty?)
+
+  if failed_tests.empty?
+    puts "No failed tests in #{filename}"
+  else
+    exit rerun_failed_tests(failed_tests)
   end
 end
