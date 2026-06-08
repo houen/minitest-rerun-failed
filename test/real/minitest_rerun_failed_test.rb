@@ -75,6 +75,49 @@ class MinitestRerunFailedTest < Minitest::Test
     File.read("./test_output/#{name}/.minitest_failed_tests.txt")
   end
 
+  def with_temp_test_dir(&block)
+    parent_dir = File.join(ROOT, "tmp")
+    FileUtils.mkdir_p(parent_dir)
+
+    Dir.mktmpdir("reporter-", parent_dir, &block)
+  end
+
+  def write_reporter_probe(dir, filename, include_line_numbers:)
+    output_path = File.join(dir, "report")
+    test_file = File.join(dir, filename)
+    FileUtils.mkdir_p(output_path)
+    File.write(test_file, <<~RUBY)
+      require "minitest/autorun"
+      require "minitest_rerun_failed"
+
+      Minitest::Reporters.use! [
+        Minitest::Reporters::FailedTestsReporter.new(
+          output_path: #{output_path.dump},
+          verbose: false,
+          include_line_numbers: #{include_line_numbers.inspect}
+        )
+      ]
+
+      class PlainExample < Minitest::Test
+        def test_fails
+          flunk
+        end
+      end
+    RUBY
+
+    [test_file, output_path]
+  end
+
+  def run_reporter_probe(filename, include_line_numbers: true)
+    with_temp_test_dir do |dir|
+      test_file, output_path = write_reporter_probe(dir, filename, include_line_numbers: include_line_numbers)
+      _stdout, _stderr, status = capture_ruby(test_file)
+      report = File.read(File.join(output_path, ".minitest_failed_tests.txt"))
+
+      [report, status]
+    end
+  end
+
   def subprocess_env(extra_env = {})
     {
       "BUNDLE_GEMFILE" => GEMFILE,
@@ -106,6 +149,20 @@ class MinitestRerunFailedTest < Minitest::Test
 
   def test_it_writes_failed_tests_to_file
     assert_match(%r{\Atest/real/minitest_rerun_failed_test.rb:[0-9]+\n\z}, fail_self_file_output)
+  end
+
+  def test_it_writes_failed_tests_for_ruby_files_without_test_suffix
+    report, status = run_reporter_probe("plain_example.rb")
+
+    refute_predicate status, :success?
+    assert_match(%r{\Atmp/reporter-.+/plain_example\.rb:[0-9]+\n\z}, report)
+  end
+
+  def test_it_writes_failed_test_files_without_test_suffix
+    report, status = run_reporter_probe("plain_example.rb", include_line_numbers: false)
+
+    refute_predicate status, :success?
+    assert_match(%r{\Atmp/reporter-.+/plain_example\.rb\n\z}, report)
   end
 
   def test_it_prints_failed_tests_with_seed
