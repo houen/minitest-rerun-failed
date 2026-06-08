@@ -38,51 +38,83 @@ module Minitest
       def report
         super
 
-        curdir        = FileUtils.pwd
-        failure_paths = failed_test_locations(curdir)
-        output_paths  = failure_paths.map(&:strip).uniq
+        curdir = FileUtils.pwd
+        failures = failed_results
+        output_paths = failed_test_locations(failures, curdir).map(&:strip).uniq
 
-        output_results(failure_paths.count, output_paths)
+        output_results(failures.count, output_paths)
+        output_missing_locations(failures.count) if failures.any? && output_paths.empty?
         write_file_output(output_paths) if @file_output
       end
 
       private
 
-      def failed_test_locations(curdir)
-        tests.filter_map do |test|
-          next if test.skipped?
-          next if test.failure.nil?
+      def failed_results
+        tests.reject do |test|
+          test.skipped? || test.failure.nil?
+        end
+      end
 
+      def failed_test_locations(failed_results, curdir)
+        failed_results.filter_map do |test|
           find_failure_location(test, curdir)
         end
       end
 
       def find_failure_location(test, curdir)
+        failure_file_location = location_from_source_location(test) || location_from_failure_output(test)
+        return unless failure_file_location
+
+        relative_location(failure_file_location, curdir)
+      end
+
+      def location_from_source_location(test)
+        return unless test.respond_to?(:source_location)
+
+        path, line_number = test.source_location
+        return unless ruby_file_path?(path)
+
+        location_for(path, line_number)
+      end
+
+      def location_from_failure_output(test)
         # Build a haystack string from failures and errors to find test file location in
         tmp_haystack = []
         tmp_haystack << test.failure.location
         tmp_haystack << test.to_s
         # Add filtered backtrace unless it is an unexpected error, which do not have a useful trace
         unless test.failure.is_a?(Minitest::UnexpectedError)
-          tmp_haystack << filter_backtrace(test.failure.backtrace).join
+          tmp_haystack << filter_backtrace(test.failure.backtrace).join("\n")
         end
 
         # Get failure location as best we can from haystack
         if @include_line_numbers
-          regex_keeping_line_numbers = /(.+(_test|_spec)\.rb:[0-9]+)/
-          failure_file_location = tmp_haystack.join[regex_keeping_line_numbers, 1]
+          regex_keeping_line_numbers = /([^\n\[]+?\.rb:[0-9]+)/
+          failure_file_location = tmp_haystack.compact.join("\n")[regex_keeping_line_numbers, 1]
         else
-          regex_removing_line_numbers = /(.+(_test|_spec)\.rb):[0-9]+/
-          failure_file_location = tmp_haystack.join[regex_removing_line_numbers, 1]
+          regex_removing_line_numbers = /([^\n\[]+?\.rb):[0-9]+/
+          failure_file_location = tmp_haystack.compact.join("\n")[regex_removing_line_numbers, 1]
         end
 
-        return unless failure_file_location
+        failure_file_location&.strip
+      end
 
+      def location_for(path, line_number)
+        return path unless @include_line_numbers && line_number
+
+        "#{path}:#{line_number}"
+      end
+
+      def ruby_file_path?(path)
+        path.to_s.end_with?(".rb")
+      end
+
+      def relative_location(failure_file_location, curdir)
         # Make path relative if absolute
-        failure_file_location.gsub!(curdir, "")
-        failure_file_location.gsub!(%r{^/}, "")
+        failure_file_location = failure_file_location.to_s.strip
+        failure_file_location = failure_file_location.sub(%r{\A#{Regexp.escape(curdir)}/?}, "")
 
-        failure_file_location.to_s.strip
+        failure_file_location.strip
       end
 
       def output_results(failure_count, output_paths)
@@ -100,6 +132,12 @@ module Minitest
         output_paths.each do |file_path|
           _puts color_red(file_path)
         end
+      end
+
+      def output_missing_locations(failure_count)
+        _puts("")
+        _puts "Failed tests: #{failure_count}, but no rerunnable Ruby file locations could be detected."
+        _puts "#{@output_file_path} was left empty."
       end
 
       def write_file_output(file_output)
