@@ -8,6 +8,9 @@ gemspec
 gem "minitest"
 gem "minitest-reporters"
 gem "rake"
-gem "rubocop-minitest"
-gem "rubocop-rake"
-gem "rubocop-rails-omakase", require: false, group: :development
+
+group :development do
+  gem "rubocop", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-rake", require: false
+end

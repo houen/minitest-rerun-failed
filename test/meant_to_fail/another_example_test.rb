@@ -11,7 +11,7 @@ Minitest::Reporters.use!(
 
 class AnotherExampleTest < Minitest::Test
   def test_one
-    assert false
+    flunk
   end
 
   def test_two
@@ -19,6 +19,6 @@ class AnotherExampleTest < Minitest::Test
   end
 
   def test_three
-    assert false
+    flunk
   end
 end

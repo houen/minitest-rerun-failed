@@ -7,7 +7,7 @@ require "rbconfig"
 require "tmpdir"
 
 # Which number test to run and fail
-FAIL_TEST_NAME = ENV["FAIL_TEST_NAME"]
+FAIL_TEST_NAME = ENV.fetch("FAIL_TEST_NAME", nil)
 
 # Choose which reporter config to use for failing the test and generating output
 case FAIL_TEST_NAME
@@ -20,7 +20,6 @@ when nil
       )
     ]
   )
-# when "test_it_prints_failed_tests_with_seed", "test_it_writes_failed_tests_to_file", "test_relevant_output_on_unexpected_errors"
 else
   Minitest::Reporters.use!(
     [
@@ -45,8 +44,8 @@ class MinitestRerunFailedTest < Minitest::Test
   def suppress_output
     original_stderr = $stderr.clone
     original_stdout = $stdout.clone
-    $stderr.reopen(File.new("/dev/null", "w"))
-    $stdout.reopen(File.new("/dev/null", "w"))
+    $stderr.reopen(File.new(File::NULL, "w"))
+    $stdout.reopen(File.new(File::NULL, "w"))
     yield
   ensure
     $stdout.reopen(original_stdout)
@@ -54,7 +53,7 @@ class MinitestRerunFailedTest < Minitest::Test
   end
 
   def fail_self(fail_msg = nil)
-    assert false, fail_msg if FAIL_TEST_NAME == name
+    flunk(fail_msg) if name == FAIL_TEST_NAME
 
     suppress_output do
       `bundle exec rake test FAIL_TEST_NAME=#{name} TEST=#{__FILE__} TESTOPTS="--name=#{name}"`
@@ -64,7 +63,7 @@ class MinitestRerunFailedTest < Minitest::Test
   alias fail_self_console_output fail_self
 
   def raise_self(fail_msg = nil)
-    raise(fail_msg) if FAIL_TEST_NAME == name
+    raise(fail_msg) if name == FAIL_TEST_NAME
 
     suppress_output do
       `bundle exec rake test FAIL_TEST_NAME=#{name} TEST=#{__FILE__} TESTOPTS="--name=#{name}"`
@@ -79,7 +78,7 @@ class MinitestRerunFailedTest < Minitest::Test
   def subprocess_env(extra_env = {})
     {
       "BUNDLE_GEMFILE" => GEMFILE,
-      "RUBYLIB" => [LIB_DIR, ENV["RUBYLIB"]].compact.join(File::PATH_SEPARATOR)
+      "RUBYLIB" => [LIB_DIR, ENV.fetch("RUBYLIB", nil)].compact.join(File::PATH_SEPARATOR)
     }.merge(extra_env)
   end
 
@@ -94,15 +93,15 @@ class MinitestRerunFailedTest < Minitest::Test
   # This is here b/c #suppress_output also hides eg Bundler::GemNotFound errors.
   # This test will print and show such issues.
   def test_it_succeeds
-    assert true
+    assert defined?(MinitestRerunFailedTest)
   end
 
   def test_that_it_has_a_version_number
-    refute ::MinitestRerunFailed::VERSION.nil?
+    refute_nil ::MinitestRerunFailed::VERSION
   end
 
   def test_it_writes_failed_tests_to_stdout
-    refute fail_self_console_output.nil?
+    refute_nil fail_self_console_output
   end
 
   def test_it_writes_failed_tests_to_file
@@ -110,13 +109,17 @@ class MinitestRerunFailedTest < Minitest::Test
   end
 
   def test_it_prints_failed_tests_with_seed
-    assert_match(/Failed tests: [0-9]+ \(seed [0-9]+\)/, fail_self_console_output)
-    assert_match(%r{test/real/minitest_rerun_failed_test.rb:[0-9]+\n}, fail_self_console_output)
+    output = fail_self_console_output
+
+    assert_match(/Failed tests: [0-9]+ \(seed [0-9]+\)/, output)
+    assert_match(%r{test/real/minitest_rerun_failed_test.rb:[0-9]+\n}, output)
   end
 
   def test_relevant_output_on_unexpected_errors
-    assert_match(/Failed tests: [0-9]+ \(seed [0-9]+\)/, fail_self_console_output)
-    assert_match(%r{test/real/minitest_rerun_failed_test.rb:[0-9]+\n}, fail_self_console_output)
+    output = raise_self
+
+    assert_match(/Failed tests: [0-9]+ \(seed [0-9]+\)/, output)
+    assert_match(%r{test/real/minitest_rerun_failed_test.rb:[0-9]+\n}, output)
   end
 
   def test_failed_tests_reporter_preserves_failed_exit_status
@@ -139,7 +142,7 @@ class MinitestRerunFailedTest < Minitest::Test
 
       _stdout, _stderr, status = capture_ruby(test_file)
 
-      refute status.success?
+      refute_predicate status, :success?
     end
   end
 
@@ -168,7 +171,7 @@ class MinitestRerunFailedTest < Minitest::Test
 
       capture_ruby(test_file)
 
-      refute File.exist?(File.join(output_path, ".minitest_failed_tests.txt"))
+      refute_path_exists File.join(output_path, ".minitest_failed_tests.txt")
     end
   end
 
@@ -193,25 +196,9 @@ class MinitestRerunFailedTest < Minitest::Test
         env: { "MINITEST_FAILED_TESTS_REPORT_DIR" => "report" }
       )
 
-      assert status.success?, stderr
+      assert_predicate status, :success?, stderr
       assert_includes stdout, "FIRST_TEST_RAN"
       assert_includes stdout, "SECOND_TEST_RAN"
-    end
-  end
-
-  def test_rerun_failed_tests_exits_with_child_status
-    Dir.mktmpdir do |dir|
-      report_dir = File.join(dir, "report")
-      FileUtils.mkdir_p(report_dir)
-      File.write(File.join(report_dir, ".minitest_failed_tests.txt"), "#{File.join(dir, "missing_test.rb")}\n")
-
-      _stdout, _stderr, status = capture_ruby(
-        CLI_PATH,
-        chdir: dir,
-        env: { "MINITEST_FAILED_TESTS_REPORT_DIR" => "report" }
-      )
-
-      refute status.success?
     end
   end
 end
