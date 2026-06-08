@@ -1,3 +1,13 @@
+## [0.3.0] - 2026-06-08
+- Fixed: Preserve Minitest failure status when `FailedTestsReporter` is used alone.
+- Fixed: Honor `file_output: false`.
+- Fixed: Use the configured report directory when rerunning failed tests.
+- Fixed: Handle rerun paths safely, support non-Rails test commands, and exit with the child test process status.
+- Fixed: Use Minitest source locations for failure reports so Ruby test files beyond `_test.rb` and `_spec.rb` can be rerun.
+- Added: `MinitestRerunFailed::Runner` for testable rerun command handling.
+- Changed: Modernized CI and RuboCop tooling.
+- Changed: Ignore local `Gemfile.lock` and `mise.toml` files for gem development.
+
 ## [0.2.3] - 2024-05-26
 - Added: Rerun tests executable
 
